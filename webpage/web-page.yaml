@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: siri-web-page
+  labels:
+    app: web-page
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-page
+  template:
+    metadata:
+      labels:
+        app: web-page
+    spec:
+      containers:
+      - name: webpage1
+        image: registry.gitlab.com/devops8093803/project3:arm64
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+      imagePullSecrets:
+      - name: siri-flask-app-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: siri-web-page-service
+spec:
+  selector:
+    app: web-page
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30045
